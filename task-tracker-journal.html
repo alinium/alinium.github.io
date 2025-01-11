@@ -77,7 +77,7 @@
         .progress-bar-inner {
             height: 100%;
             background: #68d39166;
-            width: 0%;
+            width: 0;
             transition: width 0.3s;
         }
 
@@ -204,7 +204,7 @@
                         section.innerHTML = `
                         <h2>${sectionData.title}</h2>
                         <div class="progress-bar">
-                            <div class="progress-bar-inner" style="width: 0%;"></div>
+                            <div class="progress-bar-inner" style="width: 0;"></div>
                         </div>
                         ${sectionData.tasks.map(task => `
                             <div class="task">
@@ -238,7 +238,6 @@
         event.preventDefault();
         event.returnValue = 'You have unsaved changes. Make sure to export your data before leaving!';
     });
-
 
 </script>
 </body>
