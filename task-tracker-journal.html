@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>January Task Tracker Journal</title>
+    <script>
+        // Update progress bar based on completed tasks
+        const updateProgressBar = (section) => {
+            const tasks = section.querySelectorAll('.task input[type="checkbox"]');
+            const completedTasks = Array.from(tasks).filter(task => task.checked).length;
+            const progressBar = section.querySelector('.progress-bar-inner');
+            progressBar.style.width = `${(completedTasks / tasks.length) * 100}%`;
+        };
+
+        const updateAllProgressBars = () => {
+            document.querySelectorAll('.task-section').forEach(section => {
+                updateProgressBar(section);
+            });
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a202c;
+            color: #f7fafc;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .done {
+            text-decoration: line-through;
+            color: #f7fafc66;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            /*background: #2d3748;*/
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2 {
+            color: #e2e8f0;
+        }
+
+        .task-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #4a556866;
+            border-radius: 8px;
+        }
+
+        .task {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            background: #2d374866;
+            margin: 5px 0;
+            border-radius: 4px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            border-radius: 4px;
+            background: #2d374866;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-bar-inner {
+            height: 100%;
+            background: #68d39166;
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        textarea {
+            width: 95%;
+            background: #1a202c66;
+            color: #f7fafc;
+            border: 1px solid #4a5568;
+            border-radius: 4px;
+            padding: 10px;
+        }
+
+        .add-task {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .add-task input[type="text"] {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #4a5568;
+            border-radius: 4px;
+            background: #2d3748;
+            color: #f7fafc;
+        }
+
+        .add-task button {
+            padding: 8px 12px;
+            background: #68d391;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            color: #1a202c;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>January Task Tracker Journal</h1>
+
+    <header style="margin: 20px; padding: 10px; text-align: center; border-radius: 8px;">
+        <button id="export-data-btn"
+                style="padding: 10px 20px; background: #63b3ed; color: #1a202c; border: none; border-radius: 4px; cursor: pointer;">
+            Export Data to JSON
+        </button>
+
+        <button id="import-data-btn"
+                style="padding: 10px 20px; background: #63b3ed; color: #1a202c; border: none; border-radius: 4px; cursor: pointer; margin-left: 1rem;">
+            Import Data from JSON
+        </button>
+        <input id="import-file" type="file" accept=".json" style="display: none;">
+
+    </header>
+</div> <!-- container -->
+<script>
+    const addTask = (sectionId) => {
+        const section = document.getElementById(sectionId);
+        const input = section.querySelector('.add-task input');
+        const taskText = input.value.trim();
+
+        if (taskText) {
+            const taskDiv = document.createElement('div');
+            taskDiv.className = 'task';
+            taskDiv.innerHTML = `
+                    <span>${taskText}</span>
+                    <input type="checkbox" onclick="updateProgressBar(document.getElementById('${sectionId}'));">
+                `;
+            section.insertBefore(taskDiv, section.querySelector('.notes'));
+            input.value = '';
+            updateProgressBar(section);
+        }
+    };
+
+    const exportData = () => {
+        const data = {};
+        document.querySelectorAll('.task-section').forEach(section => {
+            const sectionId = section.id;
+            const sectionTitle = section.querySelector('h2').innerText; // Get the section title
+            const tasks = Array.from(section.querySelectorAll('.task')).map(task => {
+                const taskName = task.querySelector('span').innerText; // Get the task name
+                const isChecked = task.querySelector('input[type="checkbox"]').checked; // Get the checked status
+                return {name: taskName, completed: isChecked};
+            });
+
+            data[sectionId] = {
+                title: sectionTitle,
+                tasks: tasks,
+                notes: section.querySelector('.notes').value // Include the notes
+            };
+        });
+
+        const prettyData = JSON.stringify(data, null, 4); // Format the JSON data
+        const blob = new Blob([prettyData], {type: 'application/json'}); // Create a Blob for download
+        const a = document.createElement('a'); // Temporary anchor for download
+        a.href = URL.createObjectURL(blob); // Blob URL
+        a.download = 'task_tracker_data.json'; // Filename
+        a.click(); // Trigger download
+    };
+
+    const importData = () => {
+        const fileInput = document.getElementById('import-file');
+        fileInput.click(); // Open file dialog
+
+        fileInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = (e) => {
+                    const importedData = JSON.parse(e.target.result);
+
+                    // Clear current tasks and replace with imported data
+                    document.querySelectorAll('.task-section').forEach(section => section.remove());
+
+                    Object.keys(importedData).forEach(sectionId => {
+                        const sectionData = importedData[sectionId];
+                        const container = document.querySelector('.container');
+
+                        // Create a new section
+                        const section = document.createElement('div');
+                        section.id = sectionId;
+                        section.className = 'task-section';
+                        section.innerHTML = `
+                        <h2>${sectionData.title}</h2>
+                        <div class="progress-bar">
+                            <div class="progress-bar-inner" style="width: 0%;"></div>
+                        </div>
+                        ${sectionData.tasks.map(task => `
+                            <div class="task">
+                                <span class="${task.completed ? 'done' : ''}">${task.name}</span>
+                                <input type="checkbox" ${task.completed ? 'checked' : ''} onclick="updateProgressBar(document.getElementById('${sectionId}'));">
+                            </div>
+                        `).join('')}
+                        <textarea class="notes" placeholder="Notes...">${sectionData.notes}</textarea>
+                        <div class="add-task">
+                            <input type="text" placeholder="New task...">
+                            <button onclick="addTask('${sectionId}')">Add</button>
+                        </div>`;
+                        container.appendChild(section);
+                    });
+
+                    updateAllProgressBars(); // Refresh to update progress bars
+                };
+
+                reader.readAsText(file); // Read the file content
+            }
+        });
+    };
+
+    // Attach event listener to the import button
+    document.querySelector('#import-data-btn').addEventListener('click', importData);
+
+    document.querySelector('#export-data-btn').addEventListener('click', exportData);
+
+    window.addEventListener('beforeunload', (event) => {
+        // Set a custom message for the confirmation dialog
+        event.preventDefault();
+        event.returnValue = 'You have unsaved changes. Make sure to export your data before leaving!';
+    });
+
+
+</script>
+</body>
+</html>
