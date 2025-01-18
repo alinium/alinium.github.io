@@ -5,6 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>January Task Tracker Journal</title>
     <script>
+        const wellnessMessages = [
+            "🌿 You Are in Flow.",
+            "✨ Every Step Matters. Breathe it in.",
+            "🌙 Inner Peace: Unlocked.",
+            "🌼 Growth Looks Good on You.",
+            "🍃 Aligned and Thriving.",
+            "🌊 You’re Riding the Wave.",
+            "🌸 Progress Feels Good, Doesn’t It?",
+            "🔮 Clarity Achieved.",
+            "☀️ Radiate. Elevate. Repeat.",
+            "🌿 You’re Exactly Where You Need to Be."
+        ];
+
         const updateProgressBar = (section) => {
             const tasks = section.querySelectorAll('.task input[type="checkbox"]');
             const completedTasks = Array.from(tasks).filter(task => task.checked).length;
@@ -35,7 +48,8 @@
         const triggerRewardAnimation = (section) => {
             const rewardDiv = document.createElement('div');
             rewardDiv.className = 'reward-animation';
-            rewardDiv.innerHTML = '<span>✨ Mission Accomplished! ✨</span>';
+            const randomMessage = wellnessMessages[Math.floor(Math.random() * wellnessMessages.length)];
+            rewardDiv.innerHTML = `<span>${randomMessage}</span>`;
             document.body.appendChild(rewardDiv);
 
             // Remove after animation
