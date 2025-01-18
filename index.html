@@ -17,7 +17,17 @@
             document.querySelectorAll('.task-section').forEach(section => {
                 updateProgressBar(section);
             });
-        }
+        };
+
+        const toggleTaskDone = (checkbox) => {
+            const taskSpan = checkbox.previousElementSibling;
+            if (checkbox.checked) {
+                taskSpan.classList.add('done');
+            } else {
+                taskSpan.classList.remove('done');
+            }
+            updateProgressBar(checkbox.closest('.task-section'));
+        };
     </script>
     <style>
         body {
@@ -40,7 +50,6 @@
             max-width: 800px;
             margin: 20px auto;
             padding: 20px;
-            /*background: #2d3748;*/
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
@@ -130,7 +139,6 @@
             Import Data from JSON
         </button>
         <input id="import-file" type="file" accept=".json" style="display: none;">
-
     </header>
 </div> <!-- container -->
 <script>
@@ -143,9 +151,9 @@
             const taskDiv = document.createElement('div');
             taskDiv.className = 'task';
             taskDiv.innerHTML = `
-                    <span>${taskText}</span>
-                    <input type="checkbox" onclick="updateProgressBar(document.getElementById('${sectionId}'));">
-                `;
+                <span>${taskText}</span>
+                <input type="checkbox" onclick="toggleTaskDone(this);">
+            `;
             section.insertBefore(taskDiv, section.querySelector('.notes'));
             input.value = '';
             updateProgressBar(section);
@@ -209,7 +217,7 @@
                         ${sectionData.tasks.map(task => `
                             <div class="task">
                                 <span class="${task.completed ? 'done' : ''}">${task.name}</span>
-                                <input type="checkbox" ${task.completed ? 'checked' : ''} onclick="updateProgressBar(document.getElementById('${sectionId}'));">
+                                <input type="checkbox" ${task.completed ? 'checked' : ''} onclick="toggleTaskDone(this);">
                             </div>
                         `).join('')}
                         <textarea class="notes" placeholder="Notes...">${sectionData.notes}</textarea>
