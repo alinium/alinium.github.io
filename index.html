@@ -5,12 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>January Task Tracker Journal</title>
     <script>
-        // Update progress bar based on completed tasks
         const updateProgressBar = (section) => {
             const tasks = section.querySelectorAll('.task input[type="checkbox"]');
             const completedTasks = Array.from(tasks).filter(task => task.checked).length;
             const progressBar = section.querySelector('.progress-bar-inner');
             progressBar.style.width = `${(completedTasks / tasks.length) * 100}%`;
+
+            if (completedTasks === tasks.length && tasks.length !== 0) {
+                triggerRewardAnimation(section);
+            }
         };
 
         const updateAllProgressBars = () => {
@@ -27,6 +30,18 @@
                 taskSpan.classList.remove('done');
             }
             updateProgressBar(checkbox.closest('.task-section'));
+        };
+
+        const triggerRewardAnimation = (section) => {
+            const rewardDiv = document.createElement('div');
+            rewardDiv.className = 'reward-animation';
+            rewardDiv.innerHTML = '<span>✨ Mission Accomplished! ✨</span>';
+            document.body.appendChild(rewardDiv);
+
+            // Remove after animation
+            setTimeout(() => {
+                rewardDiv.remove();
+            }, 3000);
         };
     </script>
     <style>
@@ -124,6 +139,32 @@
             cursor: pointer;
             color: #1a202c;
         }
+
+        .reward-animation {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #1a202c;
+            padding: 20px 40px;
+            border-radius: 10px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+            animation: pop-in 0.5s ease-out, fade-out 0.5s 2.5s forwards;
+            z-index: 1000;
+        }
+
+        @keyframes pop-in {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+
+        @keyframes fade-out {
+            0% { opacity: 1; }
+            100% { opacity: 0; }
+        }
     </style>
 </head>
 <body>
@@ -142,7 +183,7 @@
         </button>
         <input id="import-file" type="file" accept=".json" style="display: none;">
     </header>
-</div> <!-- container -->
+</div>
 <script>
     const addTask = (sectionId) => {
         const section = document.getElementById(sectionId);
