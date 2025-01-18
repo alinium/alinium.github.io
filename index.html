@@ -52,6 +52,16 @@
             rewardDiv.innerHTML = `<span>${randomMessage}</span>`;
             document.body.appendChild(rewardDiv);
 
+            for (let i = 0; i < 30; i++) {
+                const leaf = document.createElement('div');
+                leaf.className = 'falling-leaf';
+                leaf.style.left = Math.random() * 100 + 'vw';
+                leaf.style.animationDelay = Math.random() * 2 + 's';
+                document.body.appendChild(leaf);
+
+                setTimeout(() => leaf.remove(), 4000);
+            }
+
             // Remove after animation
             setTimeout(() => {
                 rewardDiv.remove();
@@ -168,6 +178,29 @@
             box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
             animation: pop-in 0.5s ease-out, fade-out 0.5s 2.5s forwards;
             z-index: 1000;
+        }
+
+        .falling-leaf {
+            position: fixed;
+            top: -10%;
+            width: 20px;
+            height: 20px;
+            background-image: url('https://cdn.pixabay.com/photo/2016/10/25/10/32/autumn-1768372_1280.png'); /* Leaf image */
+            background-size: cover;
+            opacity: 0.8;
+            animation: fall 3s linear forwards;
+            pointer-events: none;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
         }
 
         @keyframes pop-in {
