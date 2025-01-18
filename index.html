@@ -49,17 +49,19 @@
             const rewardDiv = document.createElement('div');
             rewardDiv.className = 'reward-animation';
             const randomMessage = wellnessMessages[Math.floor(Math.random() * wellnessMessages.length)];
+            const emoji = randomMessage.match(/^[^\w\s]+/)[0];
             rewardDiv.innerHTML = `<span>${randomMessage}</span>`;
             document.body.appendChild(rewardDiv);
 
             for (let i = 0; i < 30; i++) {
-                const leaf = document.createElement('div');
-                leaf.className = 'falling-leaf';
-                leaf.style.left = Math.random() * 100 + 'vw';
-                leaf.style.animationDelay = Math.random() * 2 + 's';
-                document.body.appendChild(leaf);
+                const emojiDrop = document.createElement('div');
+                emojiDrop.className = 'falling-emoji';
+                emojiDrop.textContent = emoji;
+                emojiDrop.style.left = Math.random() * 100 + 'vw';
+                emojiDrop.style.animationDelay = Math.random() * 2 + 's';
+                document.body.appendChild(emojiDrop);
 
-                setTimeout(() => leaf.remove(), 4000);
+                setTimeout(() => emojiDrop.remove(), 4000);
             }
 
             // Remove after animation
@@ -180,13 +182,10 @@
             z-index: 1000;
         }
 
-        .falling-leaf {
+        .falling-emoji {
             position: fixed;
             top: -10%;
-            width: 20px;
-            height: 20px;
-            background-image: url('https://cdn.pixabay.com/photo/2016/10/25/10/32/autumn-1768372_1280.png'); /* Leaf image */
-            background-size: cover;
+            font-size: 24px;
             opacity: 0.8;
             animation: fall 3s linear forwards;
             pointer-events: none;
