@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>January Task Tracker Journal</title>
+    <title>Task Tracker Journal</title>
     <script>
         const wellnessMessages = [
             "🌿 You Are in Flow.",
@@ -215,7 +215,21 @@
 </head>
 <body>
 <div class="container">
-    <h1>January Task Tracker Journal</h1>
+    <h1 id="dynamic-heading">Task Tracker Journal</h1>
+
+    <script>
+        // Get current month name
+        const monthNames = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+        const currentMonth = monthNames[new Date().getMonth()];
+        const heading = `${currentMonth} Task Tracker Journal`;
+
+        // Set the heading dynamically
+        document.getElementById("dynamic-heading").textContent = heading;
+        document.title = heading;
+    </script>
 
     <header style="margin: 20px; padding: 10px; text-align: center; border-radius: 8px;">
         <button id="export-data-btn"
