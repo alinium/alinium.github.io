@@ -15,17 +15,41 @@
             "🌸 Progress Feels Good, Doesn’t It?",
             "🔮 Clarity Achieved.",
             "☀️ Radiate. Elevate. Repeat.",
-            "🌿 You’re Exactly Where You Need to Be."
+            "🌿 You’re Exactly Where You Need to Be.",
+            "🍀 Trust the Process. It’s Working.",
+            "🌞 Light Within, Light Around You.",
+            "🌠 Small Steps, Big Shifts.",
+            "💫 The Universe Moves With You.",
+            "🌵 Resilient, Rooted, Rising.",
+            "🌺 Peace is Your Superpower.",
+            "🌖 Ebb. Flow. Grow.",
+            "🌬️ Exhale Doubt, Inhale Confidence.",
+            "🌟 You’re Becoming the Best Version of You.",
+            "🦋 Transformation is a Beautiful Process.",
+            "🍂 Let Go, Let Flow.",
+            "🌈 Alignment Over Hustle.",
+            "🌻 Soft Heart, Strong Spirit.",
+            "🌕 Full Circle. Full Energy.",
+            "🎐 A Gentle Reminder: You Are Enough.",
+            "🌳 Deep Roots, Strong Growth.",
+            "🕊️ Serenity Starts Within.",
+            "💖 Be Kind to Yourself, Always.",
+            "🌙 Rest is Productive Too.",
+            "🌀 Calm Mind, Open Heart.",
+            "🌸 Everything Unfolds in Perfect Timing.",
+            "🔥 You’re Glowing From the Inside Out."
         ];
 
-        const updateProgressBar = (section) => {
+        const updateProgressBar = (section, isChecked = false) => {
             const tasks = section.querySelectorAll('.task input[type="checkbox"]');
             const completedTasks = Array.from(tasks).filter(task => task.checked).length;
             const progressBar = section.querySelector('.progress-bar-inner');
             progressBar.style.width = `${(completedTasks / tasks.length) * 100}%`;
 
             if (completedTasks === tasks.length && tasks.length !== 0) {
-                triggerRewardAnimation(section);
+                triggerRewardAnimation(true);
+            } else if (isChecked) {
+                triggerRewardAnimation(false);
             }
         };
 
@@ -42,10 +66,10 @@
             } else {
                 taskSpan.classList.remove('done');
             }
-            updateProgressBar(checkbox.closest('.task-section'));
+            updateProgressBar(checkbox.closest('.task-section'), checkbox.checked);
         };
 
-        const triggerRewardAnimation = (section) => {
+        const triggerRewardAnimation = (biggerReward = false) => {
             const rewardDiv = document.createElement('div');
             rewardDiv.className = 'reward-animation';
             const randomMessage = wellnessMessages[Math.floor(Math.random() * wellnessMessages.length)];
@@ -53,15 +77,22 @@
             rewardDiv.innerHTML = `<span>${randomMessage}</span>`;
             document.body.appendChild(rewardDiv);
 
-            for (let i = 0; i < 30; i++) {
+            const emojiCount = biggerReward ? 90 : 30; // More emojis for bigger rewards
+            const animationDuration = biggerReward ? 10000 : 4000; // Longer duration
+            const emojiSize = biggerReward ? '1.5rem' : '2rem'; // Bigger size for grand effect
+            const animationDelay = biggerReward ? 4.5 : 2; // spread them out more evenly
+
+            for (let i = 0; i < emojiCount; i++) {
                 const emojiDrop = document.createElement('div');
                 emojiDrop.className = 'falling-emoji';
                 emojiDrop.textContent = emoji;
                 emojiDrop.style.left = Math.random() * 100 + 'vw';
-                emojiDrop.style.animationDelay = Math.random() * 2 + 's';
-                document.body.appendChild(emojiDrop);
+                emojiDrop.style.animationDelay = Math.random() * animationDelay + 's';
+                emojiDrop.style.fontSize = emojiSize;
+                emojiDrop.style.transform = `rotate(${Math.random() * 360}deg)`;
 
-                setTimeout(() => emojiDrop.remove(), 4000);
+                document.body.appendChild(emojiDrop);
+                setTimeout(() => emojiDrop.remove(), animationDuration);
             }
 
             // Remove after animation
@@ -187,11 +218,11 @@
             top: -10%;
             font-size: 24px;
             opacity: 0.8;
-            animation: fall 3s linear forwards;
+            animation: fallAnimation 3s linear forwards;
             pointer-events: none;
         }
 
-        @keyframes fall {
+        @keyframes fallAnimation  {
             0% {
                 transform: translateY(0) rotate(0deg);
                 opacity: 0.8;
