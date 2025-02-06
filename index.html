@@ -391,22 +391,7 @@
                         const section = document.createElement('div');
                         section.id = sectionId;
                         section.className = 'task-section';
-                        section.innerHTML = `
-                        <h2>${sectionData.title}  <button class="move-up-btn" onclick="moveSectionUp(this)">⬆</button></h2>
-                        <div class="progress-bar">
-                            <div class="progress-bar-inner" style="width: 0;"></div>
-                        </div>
-                        ${sectionData.tasks.map(task => `
-                            <div class="task">
-                                <span class="${task.completed ? 'done' : ''}">${task.name}</span>
-                                <input type="checkbox" ${task.completed ? 'checked' : ''} onclick="toggleTaskDone(this);">
-                            </div>
-                        `).join('')}
-                        <textarea class="notes" placeholder="Notes...">${sectionData.notes}</textarea>
-                        <div class="add-task">
-                            <input type="text" placeholder="New task...">
-                            <button onclick="addTask('${sectionId}')">Add</button>
-                        </div>`;
+                        section.innerHTML = createSectionHTML(sectionId, sectionData.title, sectionData.tasks, sectionData.notes);
                         container.appendChild(section);
                     });
 
@@ -416,6 +401,25 @@
                 reader.readAsText(file); // Read the file content
             }
         });
+    };
+
+    const createSectionHTML = (sectionId, sectionTitle, tasks, notes) => {
+        return `
+            <h2>${sectionTitle} <button class="move-up-btn" onclick="moveSectionUp(this)">⬆</button></h2>
+            <div class="progress-bar">
+                <div class="progress-bar-inner" style="width: 0;"></div>
+            </div>
+            ${tasks.map(task => `
+                <div class="task">
+                    <span class="${task.completed ? 'done' : ''}">${task.name}</span>
+                    <input type="checkbox" ${task.completed ? 'checked' : ''} onclick="toggleTaskDone(this);">
+                </div>
+            `).join('')}
+            <textarea class="notes" placeholder="Notes...">${notes}</textarea>
+            <div class="add-task">
+                <input type="text" placeholder="New task...">
+                <button onclick="addTask('${sectionId}')">Add</button>
+            </div>`;
     };
 
     const generateShortGuid = () => {
@@ -430,16 +434,7 @@
         const section = document.createElement('div');
         section.className = 'task-section';
         section.id = uniqueId;
-        section.innerHTML = `
-            <h2>New Section <button class="move-up-btn" onclick="moveSectionUp(this)">⬆</button></h2>
-            <div class="progress-bar">
-                <div class="progress-bar-inner"></div>
-            </div>
-            <div class="task">
-                <span>New Task</span>
-                <input type="checkbox">
-            </div>
-        `;
+        section.innerHTML = createSectionHTML(uniqueId, "New Section", [], "");
         container.appendChild(section);
         section.scrollIntoView({ behavior: 'smooth', block: 'start' });
     };
