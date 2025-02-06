@@ -405,7 +405,7 @@
 
     const createSectionHTML = (sectionId, sectionTitle, tasks, notes) => {
         return `
-            <h2>${sectionTitle} <button class="move-up-btn" onclick="moveSectionUp(this)">⬆</button></h2>
+            <h2 onclick="editSectionTitle(this)">${sectionTitle} <button class="move-up-btn" onclick="moveSectionUp(this)">⬆</button></h2>
             <div class="progress-bar">
                 <div class="progress-bar-inner" style="width: 0;"></div>
             </div>
@@ -420,6 +420,22 @@
                 <input type="text" placeholder="New task...">
                 <button onclick="addTask('${sectionId}')">Add</button>
             </div>`;
+    };
+
+    const editSectionTitle = (element) => {
+        element.contentEditable = "true";
+        element.focus();
+
+        element.onblur = function() {
+            element.contentEditable = "false";
+        };
+
+        element.onkeypress = function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                element.blur();
+            }
+        };
     };
 
     const generateShortGuid = () => {
