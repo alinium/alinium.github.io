@@ -137,6 +137,23 @@
             border-radius: 8px;
         }
 
+        .task-section h2 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .move-up-btn {
+            background: #4a5568;
+            color: #f7fafc;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            padding: 5px 10px;
+            margin-left: auto;
+            display: block;
+        }
+
         .task {
             display: flex;
             align-items: center;
@@ -242,15 +259,6 @@
             0% { opacity: 1; }
             100% { opacity: 0; }
         }
-
-        .move-up-btn {
-            background: #ffcc00;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            padding: 5px 10px;
-            margin-left: 10px;
-        }
     </style>
 </head>
 <body>
@@ -315,7 +323,7 @@
         const data = {};
         document.querySelectorAll('.task-section').forEach(section => {
             const sectionId = section.id;
-            const sectionTitle = section.querySelector('h2').innerText; // Get the section title
+            const sectionTitle = section.querySelector('h2').innerText.replace('⬆', '').trim();
             const tasks = Array.from(section.querySelectorAll('.task')).map(task => {
                 const taskName = task.querySelector('span').innerText; // Get the task name
                 const isChecked = task.querySelector('input[type="checkbox"]').checked; // Get the checked status
