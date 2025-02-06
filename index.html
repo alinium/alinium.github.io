@@ -314,8 +314,9 @@
     const moveSectionUp = (button) => {
         const section = button.closest('.task-section');
         const previousSection = section.previousElementSibling;
-        if (previousSection) {
+        if (previousSection && previousSection.tagName !== "HEADER") {
             section.parentNode.insertBefore(section, previousSection);
+            section.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
     };
 
