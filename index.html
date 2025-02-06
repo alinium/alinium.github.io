@@ -243,6 +243,21 @@
             pointer-events: none;
         }
 
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        #add-section-btn {
+            background: #68d391;
+            color: #1a202c;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            padding: 10px 20px;
+        }
+
         @keyframes fallAnimation  {
             0% {
                 transform: translateY(0) rotate(0deg);
@@ -295,6 +310,9 @@
         </button>
         <input id="import-file" type="file" accept=".json" style="display: none;">
     </header>
+</div>
+<div class="footer">
+    <button id="add-section-btn">Add New Section</button>
 </div>
 <script>
     const addTask = (sectionId) => {
@@ -400,10 +418,38 @@
         });
     };
 
+    const generateShortGuid = () => {
+        return 'xxxxxx'.replace(/[x]/g, function() {
+            return (Math.random() * 36 | 0).toString(36);
+        });
+    };
+
+    const addNewSection = () => {
+        const container = document.querySelector('.container');
+        const uniqueId = `section-${generateShortGuid()}`;
+        const section = document.createElement('div');
+        section.className = 'task-section';
+        section.id = uniqueId;
+        section.innerHTML = `
+            <h2>New Section <button class="move-up-btn" onclick="moveSectionUp(this)">⬆</button></h2>
+            <div class="progress-bar">
+                <div class="progress-bar-inner"></div>
+            </div>
+            <div class="task">
+                <span>New Task</span>
+                <input type="checkbox">
+            </div>
+        `;
+        container.appendChild(section);
+        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+
     // Attach event listener to the import button
     document.querySelector('#import-data-btn').addEventListener('click', importData);
 
     document.querySelector('#export-data-btn').addEventListener('click', exportData);
+
+    document.querySelector('#add-section-btn').addEventListener('click', addNewSection);
 
     window.addEventListener('beforeunload', (event) => {
         // Set a custom message for the confirmation dialog
